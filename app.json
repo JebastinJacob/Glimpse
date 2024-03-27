@@ -1,4 +1,5 @@
 {
   "name": "Glimpse",
-  "displayName": "Glimpse"
+  "displayName": "Glimpse",
+  "plugins": ["@notifee/react-native"]
 }
