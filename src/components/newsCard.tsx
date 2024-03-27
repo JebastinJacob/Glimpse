@@ -1,20 +1,39 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
-import { NewsArticle } from './../models/homeModel';
+import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { NewsArticle } from '../models/homeModel';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
+const placeHolder = require('../assets/placeholder.png')
 interface NewsCardProps {
     NewsArticle : NewsArticle
 }
 
+type RootStackParamList = {
+  Webview: { url: string ,title:string}; // Define the parameter types for your routes here
+  // Add other routes as needed
+};
+
+type HomeScreenNavigationProp = NavigationProp<RootStackParamList, 'Webview'>;
+
+
 const NewsCard: React.FC<NewsCardProps> = ({ NewsArticle }) => {
+  
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+  
+  const handleNavigate = () => {
+    // navigation.navigate('Webview',);
+    navigation.navigate('Webview', { url: NewsArticle.url,title: ""});
+  };
+
+
   return (
-    <View style={styles.cardContainer}>
-      <Image source={{ uri: NewsArticle.urlToImage }} style={styles.cardImage} />
+    <TouchableOpacity style={styles.cardContainer} onPress={handleNavigate}>
+      <Image source={NewsArticle.urlToImage == null ? placeHolder:{ uri: NewsArticle.urlToImage }} style={styles.cardImage} />
       <View style={styles.cardContent}>
         <Text style={styles.cardHeading}>{NewsArticle.title}</Text>
         <Text style={styles.cardParagraph}>{NewsArticle.description}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
