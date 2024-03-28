@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Animated, View, StyleSheet, Platform } from 'react-native';
 import CustomText from './text';
-import { Icon } from '@rneui/base';
+import { Avatar, Icon } from '@rneui/base';
 import { useNavigation } from '@react-navigation/native';
+import { primaryColor } from '../utils/colors';
 
 interface AppBarProps {
   title: string;
@@ -38,15 +39,27 @@ const ScrollableAppBar: React.FC<AppBarProps> = ({ title, backgroundColor = '#C0
   });
 
   return (
-    <Animated.View style={[styles.container, { opacity: animatedOpacity,position:isVisible?"absolute":"relative"  }]}>
-      <Icon onPress={navigation.goBack}
+    <Animated.View style={[styles.container, { opacity: animatedOpacity,position:isVisible?"absolute":"relative",justifyContent:title==""?"flex-start" : "space-around" }]}>
+      {title=="" ? <Icon onPress={navigation.goBack}
         name='arrow-back-ios'
         type='material'
-        />
-        <View style={{ backgroundColor }}>
+        style={styles.backButton}
+        /> :<View></View>
+  }
+
+<View></View>
           <CustomText text={title}/>
-        </View>
-      <></>
+          <View></View>
+    {title!="" &&
+
+        <Avatar
+        size={40}
+        rounded
+        
+        icon={{ name: 'user-circle', type: 'font-awesome' }}
+        containerStyle={styles.avatar}
+        />
+      }
     </Animated.View>
   );
 };
@@ -58,8 +71,15 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 10,
     flexDirection:'row',
-    justifyContent:"space-evenly"
+    alignItems:"center",
+    display:"flex",
+    marginTop:5,
   },
+  backButton:{
+    margin:10,
+    
+  },
+  avatar:{ backgroundColor:  primaryColor,left:0}
   
 });
 

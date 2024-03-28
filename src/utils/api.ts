@@ -24,7 +24,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // Do something with successful responses (optional)
-    console.log('Response received:', response);
+
     return response.data; // Return only the data part
   },
   (error) => {

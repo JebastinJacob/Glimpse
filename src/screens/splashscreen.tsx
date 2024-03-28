@@ -16,7 +16,10 @@ export default function SplashScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   
     setTimeout(() => {
-      navigation.navigate('Home');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
     }, 2000);
 
 

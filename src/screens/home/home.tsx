@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, Text, View} from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {BackHandler, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, Text, View} from 'react-native';
+
 import api from '../../utils/api';
 import { SafeAreaView } from 'react-native';
 import NewsCard from '../../components/newsCard';
@@ -12,22 +12,38 @@ import ScrollableAppBar from '../../components/appbar';
 import TopStories from './topStories';
 
 
+
 const json = require("../../../dummy.json")
 
 
 const Home = () => {
-  const { headlines, setHeadlines } = useGlobalStore();
-const getNewsData =async () =>{
-  const response = await api.get<any>('top-headlines?country=in&pageSize=10')
-  setHeadlines(response.articles);
-}
+  const { headlines,search, setHeadlines } = useGlobalStore();
+
+  const getNewsData = useCallback(async () => {
+  
+    try {
+      const response = await api.get<any>(search == "" ?'top-headlines?country=in&pageSize=10' : `everything?q=${search}`);
+      setHeadlines(response.articles);
+    } catch (error) {
+      console.error('Error fetching news data:', error);
+    }
+
+
+  }, [search]);
+
+  useEffect(() => {
+    getNewsData()
+  }, [search])
+  
 
 const [scrolling, setScrolling] = useState<boolean>(false);
 const [initialPos, setInitialPos] = useState<boolean>(false);
 
+
 useEffect(() => {
   getNewsData()
 }, [])
+
   
 
 const renderItem = ({ item }: { item: NewsArticle }) => (
@@ -55,14 +71,13 @@ const handleViewableItemsChanged = ({ viewableItems }: { viewableItems: Array<an
 };
 
 
-
   return (
     <SafeAreaView style ={styles.container}>
       <ScrollableAppBar title={'Glimpse'}  isVisible={!initialPos}/>
       {headlines &&  <TopStories visible={initialPos}/>}
      <View style={styles.spacing}> 
         <FlatList data={headlines} renderItem={renderItem}  scrollEnabled  onScroll={handleScroll}
-      onViewableItemsChanged={handleViewableItemsChanged}/>
+      onViewableItemsChanged={handleViewableItemsChanged} keyboardDismissMode={"on-drag"}/>
       </View>
     </SafeAreaView>
       

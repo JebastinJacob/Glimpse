@@ -6,86 +6,61 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import type {PropsWithChildren} from 'react';
+import BackgroundFetch from 'react-native-background-fetch';
+
+
 import Index from './src/screens/index';
-import Splashscreen from './src/screens/splashscreen';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import {addPlugin} from 'react-native-flipper';
+import {onDisplayNotification,clearNotification} from './src/utils/notfication';
+import NetInfo from '@react-native-community/netinfo';
+import { useGlobalStore } from './src/store/global';
+import { showToast } from './src/utils/toast';
 
 function App(): React.JSX.Element {
-  const [status, setStatus] = useState('Waiting for Flipper Desktop Player...');
-  const [gameState, setGameState] = useState({
-    cells: [],
-    turn: ' ',
-    winner: ' ',
-  });
-  const [connection, setConnection] = useState(null);
-  
+  const { isNetwork, setNetwork } = useGlobalStore();
+
   useEffect(() => {
-    addPlugin({
-      getId() {
-        return 'ReactNativeTicTacToe';
-      },
-      onConnect(connection:any) {
-        setStatus('Desktop player present');
-        setConnection(connection);
+  
+    const unsubscribe = NetInfo.addEventListener((state: any) => {
+      console.log(state,state.isConnected,"network status")
+      if(!state.isConnected){
+        showToast("No Network")
 
-        // listen to updates
-        connection.receive('SetState', (gameState:any, responder:any) => {
-          if (gameState.winner !== ' ') {
-            setStatus(
-              `Winner is ${gameState.winner}! Waiting for a new game...`,
-            );
-          } else {
-            setStatus(
-              gameState.turn === 'X'
-                ? 'Your turn...'
-                : 'Awaiting desktop players turn...',
-            );
-          }
-          setGameState(gameState);
-          responder.success();
-        });
-
-        // request initial state
-        connection.send('GetState');
-      },
-      onDisconnect() {
-        setConnection(null);
-        setStatus('Desktop player gone...');
-      },
+      }
+      setNetwork(state.isConnected);
     });
+    return () => unsubscribe(); // Cleanup function to remove listener
   }, []);
 
 
+  const onEvent = async (taskId:any) => {
+    console.log('[BackgroundFetch] task: ', taskId);
+    onDisplayNotification({title:"Connected to internet!",content:"Fetching Latest News"})
+    // Do your background work...
+    // await addEvent(taskId);
+    // IMPORTANT:  You must signal to the OS that your task is complete.
+    setTimeout(() => {
+      clearNotification()
+    }, 5000);
+    BackgroundFetch.finish(taskId);
+  }
+
+  // Timeout callback is executed when your Task has exceeded its allowed running-time.
+  // You must stop what you're doing immediately BackgroundFetch.finish(taskId)
+  const onTimeout = async (taskId:any) => {
+    console.warn('[BackgroundFetch] TIMEOUT task: ', taskId);
+    BackgroundFetch.finish(taskId);
+  }
+
+  useEffect(() => {
+    const registerBackgroundFetch = async () => {
+      BackgroundFetch.configure({minimumFetchInterval: 15,stopOnTerminate:false}, onEvent, onTimeout);
+    };
+
+    registerBackgroundFetch();
+
+  }, []);
+
   return <Index />;
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

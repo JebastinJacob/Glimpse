@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './home/home';
 import SplashScreen from './splashscreen';
 import CustomWebview from '../components/customWebview';
+import { TabNavigator } from '../navigation/tab';
 
 const Index = () => {
   const Stack = createNativeStackNavigator();
@@ -16,7 +17,7 @@ const Index = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash" >
         <Stack.Screen name="Splash" component={SplashScreen} options={{headerShown: false,animation:'flip'}}/>
-        <Stack.Screen name="Home" component={Home} options={{headerShown: false,animation:'slide_from_right'}}/>
+        <Stack.Screen name="Home" component={TabNavigator} options={{headerShown: false,animation:'slide_from_right'}}/>
         <Stack.Screen name="Webview" component={CustomWebview} options={{headerShown: false,animation:'slide_from_right'}}/>
       </Stack.Navigator>
     </NavigationContainer>
