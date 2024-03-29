@@ -1,42 +1,45 @@
-import axios, { AxiosInstance, AxiosInterceptorOptions, AxiosResponse } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosInterceptorOptions,
+  AxiosResponse,
+} from 'axios';
 // import { TOKEN, BASE_URL } from '@env';
 // Replace with your actual API base URL
-  const bearer =  "b751f2e0bf8749bc9302684f716542c7";
-  const url = "https://newsapi.org/v2/"
+const bearer = '8d2e1cbe5d724017a531165b04a0eec7';
+const url = 'https://newsapi.org/v2/';
 const api: AxiosInstance = axios.create({
   baseURL: url,
 });
 
 // Request interceptor (optional)
 api.interceptors.request.use(
-  (config) => {
+  config => {
     // Do something with successful responses (optional)
-    config.headers.Authorization = `Bearer ${bearer}`
+    config.headers.Authorization = `Bearer ${bearer}`;
     return config; // Return only the data part
   },
-  (error) => {
+  error => {
     // Do something with response errors (optional)
     console.error('Response error:', error);
     return Promise.reject(error);
-  }
+  },
 );
 // Response interceptor (optional)
 api.interceptors.response.use(
-  (response) => {
+  response => {
     // Do something with successful responses (optional)
-
     return response.data; // Return only the data part
   },
-  (error) => {
+  error => {
     // Do something with response errors (optional)
     console.error('Response error:', error);
     return Promise.reject(error);
-  }
+  },
 );
 
 // Helper functions for each HTTP method
 const get = async <T>(url: string, params?: object): Promise<T> => {
-  const response: any = await api.get<T>(url, { params });
+  const response: any = await api.get<T>(url, {params});
   return response;
 };
 
@@ -55,4 +58,4 @@ const del = async <T>(url: string): Promise<T> => {
   return response;
 };
 
-export default { get, post, put, del };
+export default {get, post, put, del};

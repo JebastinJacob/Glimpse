@@ -24,7 +24,7 @@ type HomeScreenNavigationProp = NavigationProp<RootStackParamList, 'News'>;
 
 const NewsCard: React.FC<NewsCardProps> = ({NewsArticle}) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-
+  console.log('articles', NewsArticle.title);
   const handleNavigate = () => {
     // navigation.navigate('Webview',);
     navigation.navigate('News', {NewsArticle: NewsArticle});
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   },
   cardHeading: {
     fontSize: 18,
+    color: 'black',
     fontWeight: 'bold', // Set heading to bold
   },
   cardParagraph: {

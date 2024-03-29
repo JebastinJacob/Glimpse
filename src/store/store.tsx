@@ -33,7 +33,7 @@ export const headlinesSlice: StateCreator<HeadlinesState> = (
 ) => ({
   headlines: [],
   setHeadlines: (headlines: NewsArticle[]) =>
-    set(state => ({...state, headlines})),
+    set(state => ({...state, headlines: headlines})),
   isNetwork: false,
   setNetwork: (connection: boolean) =>
     set(state => ({...state, isNetwork: connection})),
@@ -49,7 +49,7 @@ export const headlinesSlice: StateCreator<HeadlinesState> = (
   filterValues: {fromDate: '', toDate: '', type: ''},
   setFilterValues: (filter: filterValue) =>
     set(state => ({...state, filterValues: filter})),
-  category: '',
+  category: 'all',
   setCategory: (selectedCategory: string) =>
     set(state => ({...state, category: selectedCategory})),
 

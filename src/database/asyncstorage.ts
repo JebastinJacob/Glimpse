@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NewsArticle} from '../models/homeModel';
 
 // Type to represent stored data (adapt to your specific needs)
 interface StoredData {
@@ -15,7 +16,6 @@ interface StoredData {
 const storeData = async (key: string, data: any): Promise<void> => {
   try {
     const serializedData = JSON.stringify(data);
-    console.log(key, data);
     await AsyncStorage.setItem(key, serializedData);
   } catch (error) {
     console.error('Error storing data in AsyncStorage:', error);
@@ -36,6 +36,21 @@ const getData = async <T>(key: string): Promise<T | null> => {
     return data;
   } catch (error) {
     console.error('Error retrieving data from AsyncStorage:', error);
+    return null;
+  }
+};
+
+export const retrieveNewsArticles = async (): Promise<NewsArticle[] | null> => {
+  try {
+    const serializedData = await AsyncStorage.getItem('newsArticles'); // Assuming key is 'newsArticles'
+    if (!serializedData) {
+      return null; // No data found
+    }
+
+    const data: NewsArticle[] = JSON.parse(serializedData);
+    return data;
+  } catch (error) {
+    console.error('Error retrieving news articles from AsyncStorage:', error);
     return null;
   }
 };

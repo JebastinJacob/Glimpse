@@ -26,8 +26,16 @@ function App(): React.JSX.Element {
     const unsubscribe = NetInfo.addEventListener((state: any) => {
       console.log(state, state.isConnected, 'network status');
       if (!state.isConnected) {
+        onDisplayNotification({
+          title: 'No Network!',
+          content: 'connect to network',
+        });
         showToast('No Network');
       }
+      onDisplayNotification({
+        title: ' Network connected',
+        content: 'Networ available',
+      });
       setNetwork(state.isConnected);
     });
     return () => unsubscribe(); // Cleanup function to remove listener
@@ -40,7 +48,7 @@ function App(): React.JSX.Element {
       content: 'Fetching Latest News',
     });
     const response = await api.get<any>('top-headlines?country=in&pageSize=20');
-    storeData('headlines', response.article);
+    storeData('headlines', response.articles);
 
     if (response.article.length > 0) {
       onDisplayNotification({
@@ -61,6 +69,10 @@ function App(): React.JSX.Element {
   // You must stop what you're doing immediately BackgroundFetch.finish(taskId)
   const onTimeout = async (taskId: any) => {
     console.warn('[BackgroundFetch] TIMEOUT task: ', taskId);
+    onDisplayNotification({
+      title: 'Task Timeout',
+      content: 'Fetching Latest News',
+    });
     BackgroundFetch.finish(taskId);
   };
 

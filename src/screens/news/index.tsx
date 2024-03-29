@@ -22,15 +22,14 @@ export default function NewsScreen({route}: any) {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   const {isNetwork, headlines} = useGlobalStore();
-  console.log(
-    'headlines',
-    route.params != undefined ? route.params : headlines[0],
-    route.params,
-    route.params == undefined,
-  );
+
   const NewsArticle =
-    route.params != undefined ? route.params.NewsArticle : headlines[0];
-  console.log(NewsArticle);
+    route.params != undefined
+      ? route.params.NewsArticle
+      : headlines
+      ? headlines[0]
+      : [];
+  console.log(NewsArticle, 'new');
   const date = new Date(NewsArticle!.publishedAt);
   const handleNavigate = () => {
     // navigation.navigate('Webview',);
@@ -49,25 +48,31 @@ export default function NewsScreen({route}: any) {
   return (
     <>
       <ScrollableAppBar title={''} isVisible={false} />
-      <Image
-        source={
-          NewsArticle.urlToImage == null
-            ? placeHolder
-            : {uri: NewsArticle.urlToImage}
-        }
-        style={styles.cardImage}
-      />
-      <View style={styles.cardContent}>
-        <Text style={styles.cardHeading}>{NewsArticle.title}</Text>
-        <Text style={styles.cardParagraph}>{NewsArticle.description}</Text>
-        <Text style={styles.timeParagraph}>{formattedDate}</Text>
-        <Text style={styles.timeParagraph}>{NewsArticle.content}</Text>
-        {isNetwork && (
-          <TouchableOpacity onPress={handleNavigate}>
-            <Text style={styles.timeParagraph}>Read More</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      {headlines ? (
+        <>
+          <Image
+            source={
+              NewsArticle.urlToImage == null
+                ? placeHolder
+                : {uri: NewsArticle.urlToImage}
+            }
+            style={styles.cardImage}
+          />
+          <View style={styles.cardContent}>
+            <Text style={styles.cardHeading}>{NewsArticle.title}</Text>
+            <Text style={styles.cardParagraph}>{NewsArticle.description}</Text>
+            <Text style={styles.timeParagraph}>{formattedDate}</Text>
+            <Text style={styles.timeParagraph}>{NewsArticle.content}</Text>
+            {isNetwork && (
+              <TouchableOpacity onPress={handleNavigate}>
+                <Text style={styles.timeParagraph}>Read More</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </>
+      ) : (
+        <Text>No News Available Now</Text>
+      )}
     </>
   );
 }

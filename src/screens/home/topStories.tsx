@@ -34,6 +34,7 @@ export default function TopStories({visible}: TopStoriesProp) {
     [search],
   );
   const categoryArr = [
+    'all',
     'business',
     'entertainment',
     'general',

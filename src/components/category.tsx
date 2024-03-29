@@ -10,7 +10,10 @@ export default function Category({name, category}: categoryParams) {
   const {setCategory} = useGlobalStore();
   const selectedName = () => {
     setCategory(name);
-    console.log(name);
+    console.log(name, 'Selected BName');
+  };
+  const capitalizeFirstLetter = (word: string): string => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
   };
 
   return (
@@ -23,7 +26,7 @@ export default function Category({name, category}: categoryParams) {
           borderRadius: 20,
           marginHorizontal: 5,
         }}>
-        <Text>{name}</Text>
+        <Text>{capitalizeFirstLetter(name)}</Text>
       </TouchableOpacity>
     </View>
   );
