@@ -1,45 +1,57 @@
 import {create, StateCreator} from 'zustand';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NewsArticle } from '../models/homeModel';
-import { devtools,persist  } from 'zustand/middleware';
+import {NewsArticle} from '../models/homeModel';
+import {devtools, persist} from 'zustand/middleware';
 
-
-
-interface filterValue{
-  fromDate:string,
-  toDate:string,
-  type:string
+interface filterValue {
+  fromDate: string;
+  toDate: string;
+  type: string;
 }
 // Define your store state type
 export interface HeadlinesState {
   headlines: NewsArticle[]; // Use specific type
-  setHeadlines: (headlines:NewsArticle[])=> void;
-  isNetwork : boolean,
-  setNetwork:(connection : boolean)=>void;
-  search:string;
-  setSearch:(query:string)=> void;
-  openFilter:boolean;
-  setFilter:(filterStatus:boolean) => void;
-  filterValues:filterValue;
-  setFilterValues:(filter:filterValue) => void;
+  setHeadlines: (headlines: NewsArticle[]) => void;
+  isNetwork: boolean;
+  setNetwork: (connection: boolean) => void;
+  search: string;
+  setSearch: (query: string) => void;
+  openFilter: boolean;
+  setFilter: (filterStatus: boolean) => void;
+  filterValues: filterValue;
+  setFilterValues: (filter: filterValue) => void;
+  category: string;
+  setCategory: (selectedCategory: string) => void;
   // clearQuery:()=>void
 }
 
-
-export const headlinesSlice: StateCreator<HeadlinesState> = (set : (partial: HeadlinesState | ((state: HeadlinesState) => HeadlinesState)) => void) => ({
+export const headlinesSlice: StateCreator<HeadlinesState> = (
+  set: (
+    partial: HeadlinesState | ((state: HeadlinesState) => HeadlinesState),
+  ) => void,
+) => ({
   headlines: [],
-  setHeadlines: (headlines: NewsArticle[]) => set(state => ({ ...state, headlines })),
+  setHeadlines: (headlines: NewsArticle[]) =>
+    set(state => ({...state, headlines})),
   isNetwork: false,
-  setNetwork :(connection : boolean) => set(state=>({...state,isNetwork:connection})),
-  search:"",
-  setSearch :(query : string) => set(state=>( {...state,search:query  })),
+  setNetwork: (connection: boolean) =>
+    set(state => ({...state, isNetwork: connection})),
+  search: '',
+  setSearch: (query: string) => set(state => ({...state, search: query})),
   openFilter: false,
-  setFilter :(filterStatus : boolean) => set(state=>(console.log(filterStatus),{...state,openFilter:filterStatus})),
-  filterValues:{  fromDate:"",
-    toDate:"",
-    type:""},
-  setFilterValues:(filter:filterValue) => set(state=>({...state,filter}))
+  setFilter: (filterStatus: boolean) =>
+    set(
+      state => (
+        console.log(filterStatus), {...state, openFilter: filterStatus}
+      ),
+    ),
+  filterValues: {fromDate: '', toDate: '', type: ''},
+  setFilterValues: (filter: filterValue) =>
+    set(state => ({...state, filterValues: filter})),
+  category: '',
+  setCategory: (selectedCategory: string) =>
+    set(state => ({...state, category: selectedCategory})),
 
   // clearQuery :() => set(state=>({...state,search:""})),
 });
@@ -52,5 +64,3 @@ export const headlinesSlice: StateCreator<HeadlinesState> = (set : (partial: Hea
 //     { name: "headlines" },
 // )
 // );
-
-

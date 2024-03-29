@@ -1,8 +1,8 @@
-import { create } from "zustand"
-import { headlinesSlice, HeadlinesState } from "./store"
+import {create} from 'zustand';
+import {headlinesSlice, HeadlinesState} from './store';
 
-type storeType = HeadlinesState
+type storeType = HeadlinesState;
 
-export const useGlobalStore = create<storeType>((...a)=>({
-    ...headlinesSlice(...a)
-}))
+export const useGlobalStore = create<storeType>((...a) => ({
+  ...headlinesSlice(...a),
+}));

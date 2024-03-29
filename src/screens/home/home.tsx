@@ -1,86 +1,103 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {BackHandler, NativeScrollEvent, NativeSyntheticEvent, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  BackHandler,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import api from '../../utils/api';
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView} from 'react-native';
 import NewsCard from '../../components/newsCard';
-import { FlatList } from 'react-native';
-import { NewsArticle } from '../../models/homeModel';
-import { useGlobalStore } from '../../store/global';
+import {FlatList} from 'react-native';
+import {NewsArticle} from '../../models/homeModel';
+import {useGlobalStore} from '../../store/global';
 import ScrollableAppBar from '../../components/appbar';
 import TopStories from './topStories';
+import {storeData} from '../../database/asyncstorage';
+import SkeletonCard from '../../components/skeleton';
 
-
-
-const json = require("../../../dummy.json")
-
+const json = require('../../../dummy.json');
 
 const Home = () => {
-  const { headlines,search, setHeadlines } = useGlobalStore();
-
+  const {headlines, search, setHeadlines} = useGlobalStore();
+  const [isLoading, setIsLoading] = useState(false);
   const getNewsData = useCallback(async () => {
-  
     try {
-      const response = await api.get<any>(search == "" ?'top-headlines?country=in&pageSize=10' : `everything?q=${search}`);
-      setHeadlines(response.articles);
+      setIsLoading(true);
+      // const response = await api.get<any>(
+      //   search == ''
+      //     ? 'top-headlines?country=in&pageSize=10'
+      //     : `everything?q=${search}`,
+      // );
+      const response = json;
+      setHeadlines(response);
+      storeData('headlines', response);
+      setIsLoading(true);
     } catch (error) {
       console.error('Error fetching news data:', error);
+      setIsLoading(true);
     }
-
-
   }, [search]);
 
   useEffect(() => {
-    getNewsData()
-  }, [search])
-  
+    getNewsData();
+  }, [search]);
 
-const [scrolling, setScrolling] = useState<boolean>(false);
-const [initialPos, setInitialPos] = useState<boolean>(false);
+  const [scrolling, setScrolling] = useState<boolean>(false);
+  const [initialPos, setInitialPos] = useState<boolean>(false);
 
+  useEffect(() => {
+    getNewsData();
+  }, []);
 
-useEffect(() => {
-  getNewsData()
-}, [])
+  const renderItem = ({item}: {item: NewsArticle}) => (
+    <NewsCard NewsArticle={item} /> // Assuming NewsCard takes an 'article' prop
+  );
 
-  
+  const handleScroll = () => {
+    setScrolling(true);
+  };
 
-const renderItem = ({ item }: { item: NewsArticle }) => (
-  <NewsCard NewsArticle={item} /> // Assuming NewsCard takes an 'article' prop
-);
+  const handleViewableItemsChanged = ({
+    viewableItems,
+  }: {
+    viewableItems: Array<any>;
+  }) => {
+    const firstVisibleIndex = viewableItems[0]?.index;
 
-const handleScroll = () => {
-  setScrolling(true);
-};
-
-
-const handleViewableItemsChanged = ({ viewableItems }: { viewableItems: Array<any> }) => {
-  const firstVisibleIndex = viewableItems[0]?.index; 
-
-  if (firstVisibleIndex === 0) {
-    setInitialPos(true)
-    console.log('Scrolled to first index!');
-    // Trigger your first index event here
-  } else if (scrolling) {
-    setInitialPos(false)
-    console.log('Started scrolling!');
-    // Trigger your scrolling event here
-    setScrolling(false);
-  }
-};
-
+    if (firstVisibleIndex === 0) {
+      setInitialPos(true);
+      console.log('Scrolled to first index!');
+      // Trigger your first index event here
+    } else if (scrolling) {
+      setInitialPos(false);
+      console.log('Started scrolling!');
+      // Trigger your scrolling event here
+      setScrolling(false);
+    }
+  };
 
   return (
-    <SafeAreaView style ={styles.container}>
-      <ScrollableAppBar title={'Glimpse'}  isVisible={!initialPos}/>
-      {headlines &&  <TopStories visible={initialPos}/>}
-     <View style={styles.spacing}> 
-        <FlatList data={headlines} renderItem={renderItem}  scrollEnabled  onScroll={handleScroll}
-      onViewableItemsChanged={handleViewableItemsChanged} keyboardDismissMode={"on-drag"}/>
+    <SafeAreaView style={styles.container}>
+      <ScrollableAppBar title={'Glimpse'} isVisible={!initialPos} />
+      {headlines && <TopStories visible={initialPos} />}
+      {!isLoading ?? <SkeletonCard />}
+      <View style={styles.spacing}>
+        <FlatList
+          data={headlines}
+          renderItem={renderItem}
+          scrollEnabled
+          onScroll={handleScroll}
+          onViewableItemsChanged={handleViewableItemsChanged}
+          keyboardDismissMode={'on-drag'}
+        />
       </View>
     </SafeAreaView>
-      
   );
 };
 
@@ -88,9 +105,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  spacing:{
-    marginVertical:20
-  }
+  spacing: {
+    marginVertical: 20,
+  },
 });
 
 Home.propTypes = {};

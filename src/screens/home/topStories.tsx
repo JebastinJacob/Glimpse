@@ -1,18 +1,27 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import CustomText from '../../components/text';
-import {Animated, StyleSheet, View} from 'react-native';
+import {Animated, FlatList, StyleSheet, View} from 'react-native';
 import {Icon, Input} from '@rneui/base';
 import {SearchBar} from '@rneui/themed';
 import {useDebounce} from '../../utils/debounce';
 import {useGlobalStore} from '../../store/global';
 import Filter from './filter';
+import Category from '../../components/category';
 
 interface TopStoriesProp {
   visible: boolean;
 }
 
 export default function TopStories({visible}: TopStoriesProp) {
-  const {search, setSearch, headlines,setFilter,openFilter} = useGlobalStore();
+  const {
+    search,
+    setSearch,
+    headlines,
+    setFilter,
+    openFilter,
+    category,
+    setCategory,
+  } = useGlobalStore();
 
   // Call useDebounce hook to create a debounced version of setSearch
   const debouncedSetSearch = useDebounce(search, 500);
@@ -23,6 +32,25 @@ export default function TopStories({visible}: TopStoriesProp) {
       console.log(headlines.length);
     },
     [search],
+  );
+  const categoryArr = [
+    'business',
+    'entertainment',
+    'general',
+    'health',
+    'science',
+    'sports',
+    'technology',
+  ];
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('update state', category);
+    }, 1000);
+  }, [category]);
+
+  const renderItem = ({item}: {item: string}) => (
+    <Category name={item} category={category} /> // Assuming NewsCard takes an 'article' prop
   );
 
   return (
@@ -41,13 +69,28 @@ export default function TopStories({visible}: TopStoriesProp) {
           cancelIcon={false}
           clearIcon={false}
         />
-
-    <Icon  
-            name={"filter"}
-            type='font-awesome'
-            onPress={()=>{console.log("clciked"),setFilter(true)}}/>
+        <View
+          style={{
+            flexDirection: 'row',
+            marginHorizontal: 5,
+            alignItems: 'center',
+          }}>
+          <FlatList
+            renderItem={renderItem}
+            data={categoryArr}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+          <Icon
+            name={'filter'}
+            type="font-awesome"
+            onPress={() => {
+              console.log('clciked'), setFilter(true);
+            }}
+          />
+        </View>
       </View>
-      <Filter isVisible={openFilter}/>
+      <Filter isVisible={openFilter} />
     </Animated.View>
   );
 }
