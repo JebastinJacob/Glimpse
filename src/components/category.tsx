@@ -2,16 +2,19 @@ import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {primaryColor, secondaryColor} from '../utils/colors';
 import {useGlobalStore} from '../store/global';
+
 interface categoryParams {
   name: string;
   category: string;
 }
+
 export default function Category({name, category}: categoryParams) {
   const {setCategory} = useGlobalStore();
+
   const selectedName = () => {
     setCategory(name);
-    console.log(name, 'Selected BName');
   };
+
   const capitalizeFirstLetter = (word: string): string => {
     return word.charAt(0).toUpperCase() + word.slice(1);
   };
@@ -26,7 +29,7 @@ export default function Category({name, category}: categoryParams) {
           borderRadius: 20,
           marginHorizontal: 5,
         }}>
-        <Text>{capitalizeFirstLetter(name)}</Text>
+        <Text style={{color: 'white'}}>{capitalizeFirstLetter(name)}</Text>
       </TouchableOpacity>
     </View>
   );

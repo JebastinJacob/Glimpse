@@ -1,6 +1,4 @@
-import {StackView} from '@react-navigation/stack';
 import {Skeleton} from '@rneui/themed';
-
 import React from 'react';
 import {Dimensions, StyleSheet, View, Animated} from 'react-native';
 

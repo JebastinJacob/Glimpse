@@ -41,11 +41,7 @@ export const headlinesSlice: StateCreator<HeadlinesState> = (
   setSearch: (query: string) => set(state => ({...state, search: query})),
   openFilter: false,
   setFilter: (filterStatus: boolean) =>
-    set(
-      state => (
-        console.log(filterStatus), {...state, openFilter: filterStatus}
-      ),
-    ),
+    set(state => ({...state, openFilter: filterStatus})),
   filterValues: {fromDate: '', toDate: '', type: ''},
   setFilterValues: (filter: filterValue) =>
     set(state => ({...state, filterValues: filter})),

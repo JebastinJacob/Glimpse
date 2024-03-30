@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+
 import {NewsArticle} from '../models/homeModel';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 const placeHolder = require('../assets/placeholder.png');
+
 interface NewsCardProps {
   NewsArticle: NewsArticle;
 }
@@ -24,13 +19,12 @@ type HomeScreenNavigationProp = NavigationProp<RootStackParamList, 'News'>;
 
 const NewsCard: React.FC<NewsCardProps> = ({NewsArticle}) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  console.log('articles', NewsArticle.title);
   const handleNavigate = () => {
-    // navigation.navigate('Webview',);
     navigation.navigate('News', {NewsArticle: NewsArticle});
   };
 
   const date = new Date(NewsArticle.publishedAt);
+
   const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(
     date.getMonth() + 1
   )

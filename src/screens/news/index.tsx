@@ -1,19 +1,15 @@
 import {Text} from '@rneui/base';
 import React from 'react';
-import {NewsArticle} from '../../models/homeModel';
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+
 import ScrollableAppBar from '../../components/appbar';
 import {useGlobalStore} from '../../store/global';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-const placeHolder = require('../../assets/placeholder.png');
 
-interface NewsCardProps {
-  route: {params: {NewsArticle: NewsArticle}};
-}
+const placeHolder = require('../../assets/placeholder.png');
 
 type RootStackParamList = {
   Webview: {url: string; title: string}; // Define the parameter types for your routes here
-  // Add other routes as needed
 };
 
 type HomeScreenNavigationProp = NavigationProp<RootStackParamList, 'Webview'>;
@@ -29,13 +25,13 @@ export default function NewsScreen({route}: any) {
       : headlines
       ? headlines[0]
       : [];
-  console.log(NewsArticle, 'new');
+
   const date = new Date(NewsArticle!.publishedAt);
   const handleNavigate = () => {
-    // navigation.navigate('Webview',);
     navigation.navigate('Webview', {url: NewsArticle.url, title: ''});
   };
 
+  //function to formate the date
   const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(
     date.getMonth() + 1
   )
@@ -48,6 +44,7 @@ export default function NewsScreen({route}: any) {
   return (
     <>
       <ScrollableAppBar title={''} isVisible={false} />
+
       {headlines ? (
         <>
           <Image
@@ -65,7 +62,7 @@ export default function NewsScreen({route}: any) {
             <Text style={styles.timeParagraph}>{NewsArticle.content}</Text>
             {isNetwork && (
               <TouchableOpacity onPress={handleNavigate}>
-                <Text style={styles.timeParagraph}>Read More</Text>
+                <Text style={styles.readParagraph}>Read More</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -114,5 +111,12 @@ const styles = StyleSheet.create({
     marginTop: 7,
     fontSize: 12,
     color: 'black', // Set paragraph text to light gray
+  },
+  readParagraph: {
+    marginTop: 7,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    color: 'blue', // Set paragraph text to light gray
   },
 });

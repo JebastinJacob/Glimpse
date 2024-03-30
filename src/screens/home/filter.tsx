@@ -1,16 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Dialog, Input, Text} from '@rneui/themed';
 import {useGlobalStore} from '../../store/global';
-import {
-  Button,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Chip, Icon} from '@rneui/base';
+import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Icon} from '@rneui/base';
 import {primaryColor, secondaryColor} from '../../utils/colors';
-import DatePicker from 'react-native-date-picker';
 import {formatDate} from '../../utils/date';
 import CustomDatePicker from '../../components/datepicker';
 import CustomText from '../../components/text';
@@ -26,15 +19,9 @@ export default function Filter({isVisible}: filterProps) {
   const [chipValue, setChipValue] = useState('');
   const [fromDate, setFromDate] = useState(formatDate(new Date()));
   const [toDate, setToDate] = useState(formatDate(new Date()));
+  const [fromOpen, setFromOpen] = useState(false);
+  const [toOpen, setToOpen] = useState(false);
 
-  useEffect(() => {
-    console.log('changed', chipValue);
-    // setFilter(openFilter)
-  }, [openFilter, chipValue]);
-
-  // useEffect(() => {
-  //   setFilterValues(filterValues);
-  // }, [filterValues]);
   const handleAddFilters = () => {
     setFilterValues({
       fromDate: fromDate.toString(),
@@ -58,16 +45,13 @@ export default function Filter({isVisible}: filterProps) {
     setToDate(formatDate(new Date()));
   };
 
-  const [fromOpen, setFromOpen] = useState(false);
-  const [toOpen, setToOpen] = useState(false);
-
   const renderItem = ({item}: {item: any}) => (
     <TouchableOpacity
       onPress={() => setChipValue(item.name)}
       style={{
         padding: 10,
-        // width: 120,
         margin: 5,
+        borderRadius: 8,
         backgroundColor:
           chipValue === item.name ? primaryColor : secondaryColor,
       }}>
@@ -80,6 +64,7 @@ export default function Filter({isVisible}: filterProps) {
     {name: 'relevancy', title: 'Relevance'},
     {name: 'popularity', title: 'popular'},
   ];
+
   return (
     <>
       <Dialog isVisible={isVisible} onBackdropPress={handleClose}>
@@ -94,7 +79,7 @@ export default function Filter({isVisible}: filterProps) {
           />
         </View>
         <CustomText text="From Date" />
-        <TouchableOpacity onPress={() => setToOpen(true)}>
+        <TouchableOpacity onPress={() => setFromOpen(true)}>
           <Input
             leftIcon={
               <Icon
@@ -136,21 +121,11 @@ export default function Filter({isVisible}: filterProps) {
           <Dialog.Button
             buttonStyle={style.button}
             titleStyle={style.buttonTitle}
-            title="Cancel"
+            title="Clear"
             onPress={handleClose}
           />
         </Dialog.Actions>
       </Dialog>
-      <CustomDatePicker
-        open={toOpen}
-        date={toDate}
-        confirm={(date: Date) => {
-          setToOpen(false);
-          console.log('date came ', formatDate(date));
-          setToDate(formatDate(date));
-        }}
-        cancel={() => setToOpen(false)}
-      />
       <CustomDatePicker
         open={fromOpen}
         date={fromDate}
@@ -159,6 +134,15 @@ export default function Filter({isVisible}: filterProps) {
           setFromDate(formatDate(date));
         }}
         cancel={() => setFromOpen(false)}
+      />
+      <CustomDatePicker
+        open={toOpen}
+        date={toDate}
+        confirm={(date: Date) => {
+          setToOpen(false);
+          setToDate(formatDate(date));
+        }}
+        cancel={() => setToOpen(false)}
       />
     </>
   );

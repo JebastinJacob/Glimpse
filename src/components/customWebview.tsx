@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  NativeSyntheticEvent,
-} from 'react-native';
+import {StyleSheet} from 'react-native';
 import WebView from 'react-native-webview';
 import ScrollableAppBar from './appbar';
 
@@ -15,7 +9,6 @@ interface CustomWebviewProps {
 
 const CustomWebview: React.FC<any> = ({route}) => {
   const {url, title} = route.params;
-  console.log(url, title);
 
   return (
     <>

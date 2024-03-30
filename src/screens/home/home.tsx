@@ -1,14 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
-import {
-  BackHandler,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import api from '../../utils/api';
 import {SafeAreaView} from 'react-native';
@@ -18,35 +9,28 @@ import {NewsArticle} from '../../models/homeModel';
 import {useGlobalStore} from '../../store/global';
 import ScrollableAppBar from '../../components/appbar';
 import TopStories from './topStories';
-import {
-  getData,
-  retrieveNewsArticles,
-  storeData,
-} from '../../database/asyncstorage';
+import {retrieveNewsArticles, storeData} from '../../database/asyncstorage';
 import SkeletonCard from '../../components/skeleton';
-
-const json = require('../../../dummy.json');
+import {showToast} from '../../utils/toast';
 
 const Home = () => {
   const {headlines, search, setHeadlines, isNetwork, filterValues, category} =
     useGlobalStore();
   const [isLoading, setIsLoading] = useState(false);
+
   const getNewsData = useCallback(async () => {
     try {
       setIsLoading(true);
-      console.log('network ', isNetwork);
       if (isNetwork) {
+        //setting the  endpoint
         var searchEndpoint = 'top-headlines?country=in&pageSize=10';
-        if (search !== '' && category === 'all')
+        if (search != '' && category == 'all')
           searchEndpoint = `everything?q=${search}&q=${search}&from=${filterValues.fromDate}&to=${filterValues.toDate}&sortBy=${filterValues.type}`;
-        if (category !== 'all')
+        else if (category !== 'all')
           searchEndpoint = `top-headlines?category=${category}&q=${search}&from=${filterValues.fromDate}&to=${filterValues.toDate}&sortBy=${filterValues.type}`;
         else searchEndpoint = 'top-headlines?country=in&pageSize=10';
 
-        console.log('endpoint', searchEndpoint);
-
         const response = await api.get<any>(searchEndpoint);
-
         setHeadlines(response.articles);
         storeData('headlines', response.articles);
       } else {
@@ -55,23 +39,18 @@ const Home = () => {
           if (articles) {
             setHeadlines(articles); // Dispatch action only if articles exist
           } else {
-            // Handle the case where no articles are found (optional)
-            console.log('No news articles found');
+            showToast('No news articles found');
           }
         } catch (error) {
+          showToast('Something went wrong');
           console.error('Error retrieving news articles:', error);
         }
       }
-
       setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching news data:', error);
+    } catch (error: any) {
+      showToast(error.message);
       setIsLoading(false);
     }
-
-    setTimeout(() => {
-      console.log(headlines);
-    }, 500);
   }, [search, isNetwork, category, filterValues]);
 
   useEffect(() => {
@@ -102,12 +81,8 @@ const Home = () => {
 
     if (firstVisibleIndex === 0) {
       setInitialPos(true);
-      console.log('Scrolled to first index!');
-      // Trigger your first index event here
     } else if (scrolling) {
       setInitialPos(false);
-      console.log('Started scrolling!');
-      // Trigger your scrolling event here
       setScrolling(false);
     }
   };

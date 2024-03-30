@@ -19,6 +19,9 @@ import {showToast} from './src/utils/toast';
 import {storeData} from './src/database/asyncstorage';
 import api from './src/utils/api';
 
+
+const json = require('./dummy.json');
+
 function App(): React.JSX.Element {
   const {isNetwork, setNetwork} = useGlobalStore();
 
@@ -47,12 +50,13 @@ function App(): React.JSX.Element {
       title: 'Connected to internet!',
       content: 'Fetching Latest News',
     });
-    const response = await api.get<any>('top-headlines?country=in&pageSize=20');
-    storeData('headlines', response.articles);
+    const response = json;
+    // const response = await api.get<any>('top-headlines?country=in&pageSize=20');
+    storeData('headlines', response);
 
-    if (response.article.length > 0) {
+    if (response.length > 0) {
       onDisplayNotification({
-        title: response.article[0].title,
+        title: response[0].title,
         content: 'Click to Open the News',
       });
     }
@@ -65,6 +69,7 @@ function App(): React.JSX.Element {
     BackgroundFetch.finish(taskId);
   };
 
+
   // Timeout callback is executed when your Task has exceeded its allowed running-time.
   // You must stop what you're doing immediately BackgroundFetch.finish(taskId)
   const onTimeout = async (taskId: any) => {
@@ -76,6 +81,12 @@ function App(): React.JSX.Element {
     BackgroundFetch.finish(taskId);
   };
 
+  setTimeout(() => {
+    onDisplayNotification({
+      title: 'Timeout executed',
+      content: 'Fetching Latest News',
+    });
+  }, 2000);
   useEffect(() => {
     const registerBackgroundFetch = async () => {
       BackgroundFetch.configure(

@@ -1,9 +1,7 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import CustomText from '../../components/text';
+import React, {useCallback, useEffect} from 'react';
 import {Animated, FlatList, StyleSheet, View} from 'react-native';
-import {Icon, Input} from '@rneui/base';
+import {Icon} from '@rneui/base';
 import {SearchBar} from '@rneui/themed';
-import {useDebounce} from '../../utils/debounce';
 import {useGlobalStore} from '../../store/global';
 import Filter from './filter';
 import Category from '../../components/category';
@@ -21,18 +19,16 @@ export default function TopStories({visible}: TopStoriesProp) {
     openFilter,
     category,
     setCategory,
+    setFilterValues,
   } = useGlobalStore();
-
-  // Call useDebounce hook to create a debounced version of setSearch
-  const debouncedSetSearch = useDebounce(search, 500);
 
   const updateSearch = useCallback(
     (newSearch: string) => {
       setSearch(newSearch);
-      console.log(headlines.length);
     },
     [search],
   );
+
   const categoryArr = [
     'all',
     'business',
@@ -44,19 +40,12 @@ export default function TopStories({visible}: TopStoriesProp) {
     'technology',
   ];
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('update state', category);
-    }, 1000);
-  }, [category]);
-
   const renderItem = ({item}: {item: string}) => (
     <Category name={item} category={category} /> // Assuming NewsCard takes an 'article' prop
   );
 
   return (
     <Animated.View style={[{position: 'relative'}]}>
-      {/* <CustomText text="Top Stories" fontSize={20} color={'#002010'} /> */}
       <View style={{backgroundColor: 'transparent'}}>
         <SearchBar
           placeholder="Search Headlines..."
@@ -86,7 +75,20 @@ export default function TopStories({visible}: TopStoriesProp) {
             name={'filter'}
             type="font-awesome"
             onPress={() => {
-              console.log('clciked'), setFilter(true);
+              setFilter(true);
+            }}
+          />
+          <Icon
+            name={'cancel'}
+            type="material"
+            onPress={() => {
+              setCategory('all');
+              setSearch('');
+              setFilterValues({
+                fromDate: '',
+                toDate: '',
+                type: '',
+              });
             }}
           />
         </View>

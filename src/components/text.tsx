@@ -1,27 +1,22 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 
 interface CustomTextProps {
   text: string;
   color?: string;
   fontSize?: number;
-  fontWeight?: string;
 }
 
-const CustomText: React.FC<CustomTextProps> = ({ text, color, fontSize, fontWeight }) => {
+const CustomText: React.FC<CustomTextProps> = ({text, color, fontSize}) => {
   const styles = StyleSheet.create({
     text: {
-      color: color || 'black', // Default color to black
-      fontSize: fontSize || 16, // Default font size to 16
-      fontWeight:"normal", // Default font weight to normal
+      color: color || 'black',
+      fontSize: fontSize || text == 'Glimpse' ? 20 : 16,
+      fontWeight: text == 'Glimpse' ? 'bold' : 'normal',
     },
   });
 
-  return (
-    <Text style={styles.text}>
-      {text}
-    </Text>
-  );
+  return <Text style={styles.text}>{text}</Text>;
 };
 
 export default CustomText;

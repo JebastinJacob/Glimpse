@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Animated, View, StyleSheet, Platform } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Animated, View, StyleSheet} from 'react-native';
+import {Avatar, Icon} from '@rneui/base';
+import {useNavigation} from '@react-navigation/native';
+
 import CustomText from './text';
-import { Avatar, Icon } from '@rneui/base';
-import { useNavigation } from '@react-navigation/native';
-import { primaryColor } from '../utils/colors';
+import {primaryColor} from '../utils/colors';
 
 interface AppBarProps {
   title: string;
@@ -11,16 +12,17 @@ interface AppBarProps {
   isVisible: boolean; // Boolean parameter to control visibility
 }
 
-const ScrollableAppBar: React.FC<AppBarProps> = ({ title, backgroundColor = '#C0C0C0', isVisible }) => {
+const ScrollableAppBar: React.FC<AppBarProps> = ({
+  title,
+  backgroundColor = '#C0C0C0',
+  isVisible,
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
-  //const [appBarVisible, setAppBarVisible] = useState(isVisible);
   const navigation = useNavigation();
-  
+
   useEffect(() => {
     toggleAppBarVisibility(isVisible);
   }, [isVisible]);
-
-  
 
   const toggleAppBarVisibility = (visible: boolean) => {
     Animated.timing(scrollY, {
@@ -39,27 +41,37 @@ const ScrollableAppBar: React.FC<AppBarProps> = ({ title, backgroundColor = '#C0
   });
 
   return (
-    <Animated.View style={[styles.container, { opacity: animatedOpacity,position:isVisible?"absolute":"relative",justifyContent:title==""?"flex-start" : "space-around" }]}>
-      {title=="" ? <Icon onPress={navigation.goBack}
-        name='arrow-back-ios'
-        type='material'
-        style={styles.backButton}
-        /> :<View></View>
-  }
-
-<View></View>
-          <CustomText text={title}/>
-          <View></View>
-    {title!="" &&
-
-        <Avatar
-        size={40}
-        rounded
-        
-        icon={{ name: 'user-circle', type: 'font-awesome' }}
-        containerStyle={styles.avatar}
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          opacity: animatedOpacity,
+          position: isVisible ? 'absolute' : 'relative',
+          justifyContent: title == '' ? 'flex-start' : 'space-around',
+        },
+      ]}>
+      {title == '' ? (
+        <Icon
+          onPress={navigation.goBack}
+          name="arrow-back-ios"
+          type="material"
+          style={styles.backButton}
         />
-      }
+      ) : (
+        <View></View>
+      )}
+
+      <View></View>
+      <CustomText text={title} />
+      <View></View>
+      {title != '' && (
+        <Avatar
+          size={40}
+          rounded
+          icon={{name: 'user-circle', type: 'font-awesome'}}
+          containerStyle={styles.avatar}
+        />
+      )}
     </Animated.View>
   );
 };
@@ -70,17 +82,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
-    flexDirection:'row',
-    alignItems:"center",
-    display:"flex",
-    marginTop:5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    display: 'flex',
+    marginTop: 5,
   },
-  backButton:{
-    margin:10,
-    
+  backButton: {
+    margin: 10,
   },
-  avatar:{ backgroundColor:  primaryColor,left:0}
-  
+  avatar: {backgroundColor: primaryColor, left: 0},
 });
 
 export default ScrollableAppBar;
