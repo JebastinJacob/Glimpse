@@ -3,9 +3,9 @@ import axios, {
   AxiosInterceptorOptions,
   AxiosResponse,
 } from 'axios';
-// import { TOKEN, BASE_URL } from '@env';
-// Replace with your actual API base URL
-const bearer = '8d2e1cbe5d724017a531165b04a0eec7';
+
+//add key here
+const bearer = '';
 const url = 'https://newsapi.org/v2/';
 const api: AxiosInstance = axios.create({
   baseURL: url,
