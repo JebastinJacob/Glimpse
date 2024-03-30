@@ -3,6 +3,7 @@ import {NewsArticle} from '../models/homeModel';
 
 const storeData = async (key: string, data: any): Promise<void> => {
   try {
+    console.log('received data', key, data);
     const serializedData = JSON.stringify(data);
     await AsyncStorage.setItem(key, serializedData);
   } catch (error) {
@@ -25,7 +26,7 @@ const getData = async <T>(key: string): Promise<T | null> => {
 
 export const retrieveNewsArticles = async (): Promise<NewsArticle[] | null> => {
   try {
-    const serializedData = await AsyncStorage.getItem('newsArticles'); // Assuming key is 'newsArticles'
+    const serializedData = await AsyncStorage.getItem('headlines'); // Assuming key is 'newsArticles'
     if (!serializedData) {
       return null; // No data found
     }
