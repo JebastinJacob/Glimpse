@@ -25,7 +25,7 @@ const Home = () => {
         //setting the  endpoint
         var searchEndpoint = 'top-headlines?country=in&pageSize=10';
         if (search != '' && category == 'all')
-          searchEndpoint = `everything?q=${search}&q=${search}&from=${filterValues.fromDate}&to=${filterValues.toDate}&sortBy=${filterValues.type}`;
+          searchEndpoint = `everything?q=${search}&from=${filterValues.fromDate}&to=${filterValues.toDate}&sortBy=${filterValues.type}`;
         else if (category !== 'all')
           searchEndpoint = `top-headlines?category=${category}&q=${search}&from=${filterValues.fromDate}&to=${filterValues.toDate}&sortBy=${filterValues.type}`;
         else searchEndpoint = 'top-headlines?country=in&pageSize=10';

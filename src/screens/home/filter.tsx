@@ -13,7 +13,7 @@ interface filterProps {
 }
 
 export default function Filter({isVisible}: filterProps) {
-  const {openFilter, setFilter, setFilterValues, filterValues} =
+  const {openFilter, setFilter, setFilterValues, filterValues, filterHistory} =
     useGlobalStore();
 
   const [chipValue, setChipValue] = useState('');
@@ -29,6 +29,17 @@ export default function Filter({isVisible}: filterProps) {
       type: chipValue,
     });
     setFilter(false);
+
+    if (filterHistory.length >= 2) {
+      filterHistory.reverse();
+      filterHistory.pop();
+    }
+
+    filterHistory.push({
+      fromDate: fromDate.toString(),
+      toDate: toDate.toString(),
+      type: chipValue,
+    });
   };
 
   const handleClose = () => {

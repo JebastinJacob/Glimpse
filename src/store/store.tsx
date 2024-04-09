@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NewsArticle} from '../models/homeModel';
 import {devtools, persist} from 'zustand/middleware';
 
-interface filterValue {
+export interface filterValue {
   fromDate: string;
   toDate: string;
   type: string;
@@ -23,6 +23,8 @@ export interface HeadlinesState {
   setFilterValues: (filter: filterValue) => void;
   category: string;
   setCategory: (selectedCategory: string) => void;
+  filterHistory: filterValue[];
+  // setFilterHistory: (filterValue: filterValue) => void;
   // clearQuery:()=>void
 }
 
@@ -43,12 +45,17 @@ export const headlinesSlice: StateCreator<HeadlinesState> = (
   setFilter: (filterStatus: boolean) =>
     set(state => ({...state, openFilter: filterStatus})),
   filterValues: {fromDate: '', toDate: '', type: ''},
-  setFilterValues: (filter: filterValue) =>
-    set(state => ({...state, filterValues: filter})),
+  setFilterValues: (filter: filterValue) => {
+    console.log('filter store: ', filter);
+
+    set(state => ({...state, filterValues: filter}));
+  },
   category: 'all',
   setCategory: (selectedCategory: string) =>
     set(state => ({...state, category: selectedCategory})),
-
+  filterHistory: [],
+  // setFilterHistory: (filterValue: filterValue) =>
+  //   set(state => ({...state, filterHistory.})),
   // clearQuery :() => set(state=>({...state,search:""})),
 });
 
